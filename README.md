@@ -1,1 +1,1 @@
-# help-chat-ui
+# WebFlux 를 이용한 Chat 시스템 UI 프로젝트
