@@ -1,44 +1,37 @@
+// app/signup/page.tsx
 "use client"
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 
-export default function LoginPage() {
+export default function SignupPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const router = useRouter();
 
-  const handleLogin = async () => {
+  const handleSignup = async () => {
     try {
-      const response = await fetch("http://localhost:8080/login", {
+      const response = await fetch("http://localhost:8080/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ email, password }),
       });
-  
+
       if (response.ok) {
-        const data = await response.json();
-        console.log("로그인 성공!", data);
-        alert("로그인 성공!");
+        alert("회원가입 성공! 로그인 페이지로 이동합니다.");
+        window.location.href = "/"; // 로그인 페이지로 이동
       } else {
-        console.error("로그인 실패", response.status);
-        alert("로그인 실패! 다시 시도하세요.");
+        alert("회원가입 실패. 다시 시도하세요.");
       }
     } catch (error) {
-      console.error("오류 발생:", error);
-      alert("오류가 발생했습니다. 서버를 확인하세요.");
+      console.error("회원가입 오류:", error);
+      alert("오류가 발생했습니다.");
     }
   };
 
-  const goToSignup = () => {
-    router.push("/signup");
-  }
-
   return (
     <div style={styles.container}>
-      <h1>로그인</h1>
+      <h1>회원가입</h1>
       <input
         type="email"
         placeholder="이메일"
@@ -53,10 +46,7 @@ export default function LoginPage() {
         onChange={(e) => setPassword(e.target.value)}
         style={styles.input}
       />
-      <button onClick={handleLogin} style={styles.button}>
-        로그인
-      </button>
-      <button onClick={goToSignup} style={styles.signupButton}>
+      <button onClick={handleSignup} style={styles.button}>
         회원가입
       </button>
     </div>
@@ -79,16 +69,8 @@ const styles = {
   button: {
     padding: "10px",
     width: "150px",
-    backgroundColor: "#0070f3",
+    backgroundColor: "#28a745",
     color: "white",
-    border: "none",
-    cursor: "pointer",
-  },
-    signupButton: {
-    padding: "10px",
-    width: "150px",
-    backgroundColor: "#ccc",
-    color: "#333",
     border: "none",
     cursor: "pointer",
   },
