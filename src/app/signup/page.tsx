@@ -21,7 +21,9 @@ export default function SignupPage() {
         alert("회원가입 성공! 로그인 페이지로 이동합니다.");
         window.location.href = "/"; // 로그인 페이지로 이동
       } else {
-        alert("회원가입 실패. 다시 시도하세요.");
+        // 서버에서 보낸 에러 메시지 읽기
+        const errorText = await response.text();
+        alert("회원가입 실패: " + errorText);
       }
     } catch (error) {
       console.error("회원가입 오류:", error);

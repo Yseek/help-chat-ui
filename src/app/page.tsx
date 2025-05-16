@@ -23,8 +23,9 @@ export default function LoginPage() {
         console.log("로그인 성공!", data);
         alert("로그인 성공!");
       } else {
-        console.error("로그인 실패", response.status);
-        alert("로그인 실패! 다시 시도하세요.");
+        const errorData = await response.json();
+        console.error("로그인 실패", errorData);
+        alert(errorData.message || "로그인 실패! 다시 시도하세요.");
       }
     } catch (error) {
       console.error("오류 발생:", error);
