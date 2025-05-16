@@ -7,6 +7,7 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
+  const [token, setToken] = useState("");
 
   const handleLogin = async () => {
     try {
@@ -21,6 +22,7 @@ export default function LoginPage() {
       if (response.ok) {
         const data = await response.json();
         console.log("로그인 성공!", data);
+        setToken(data.token);
         alert("로그인 성공!");
       } else {
         const errorData = await response.json();
@@ -36,6 +38,27 @@ export default function LoginPage() {
   const goToSignup = () => {
     router.push("/signup");
   }
+
+  const enterChatRoom = async () => {
+    try {
+      const response = await fetch("http://localhost:8080/chat-room/1", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`, // ✅ JWT 토큰 사용
+        },
+      });
+
+      if (response.ok) {
+        const result = await response.text();
+        alert("채팅방 입장 성공: " + result);
+      } else {
+        alert("채팅방 입장 실패! 인증되지 않은 사용자입니다.");
+      }
+    } catch (error) {
+      console.error("채팅방 입장 중 오류:", error);
+      alert("오류가 발생했습니다. 서버를 확인하세요.");
+    }
+  };
 
   return (
     <div style={styles.container}>
@@ -59,6 +82,9 @@ export default function LoginPage() {
       </button>
       <button onClick={goToSignup} style={styles.signupButton}>
         회원가입
+      </button>
+      <button onClick={enterChatRoom} style={styles.button} disabled={!token}>
+        채팅방 입장 (room1)
       </button>
     </div>
   );
