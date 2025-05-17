@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import styles from "./LoginForm.module.css";
 
 export default function LoginForm() {
   const { login, logout, token, email } = useAuth();
@@ -25,9 +26,9 @@ export default function LoginForm() {
 
   if (token) {
     return (
-      <div style={styles.container}>
+      <div className={styles.container}>
         <h2>환영합니다, {email} 님 🎉</h2>
-        <button onClick={logout} style={styles.logoutButton}>
+        <button onClick={logout} className={styles.logoutButton}>
           로그아웃
         </button>
       </div>
@@ -35,68 +36,28 @@ export default function LoginForm() {
   }
 
   return (
-    <div style={styles.container}>
+    <div className={styles.container}>
       <h2>로그인</h2>
       <input
         type="email"
         value={inputEmail}
         placeholder="이메일"
         onChange={(e) => setInputEmail(e.target.value)}
-        style={styles.input}
+        className={styles.input}
       />
       <input
         type="password"
         value={password}
         placeholder="비밀번호"
         onChange={(e) => setPassword(e.target.value)}
-        style={styles.input}
+        className={styles.input}
       />
-      <button onClick={handleLogin} style={styles.loginButton}>
+      <button onClick={handleLogin} className={styles.loginButton}>
         로그인
       </button>
-      <button onClick={goToSignup} style={styles.signupButton}>
+      <button onClick={goToSignup} className={styles.signupButton}>
         회원가입
       </button>
     </div>
   );
 }
-
-const styles = {
-  container: {
-    display: "flex",
-    flexDirection: "column" as const,
-    alignItems: "center",
-    justifyContent: "center",
-    padding: "20px",
-  },
-  input: {
-    marginBottom: "10px",
-    padding: "8px",
-    width: "250px",
-  },
-  loginButton: {
-    padding: "10px",
-    width: "150px",
-    backgroundColor: "#0070f3",
-    color: "white",
-    border: "none",
-    cursor: "pointer",
-    marginBottom: "8px",
-  },
-  signupButton: {
-    padding: "10px",
-    width: "150px",
-    backgroundColor: "#ccc",
-    color: "#333",
-    border: "none",
-    cursor: "pointer",
-  },
-  logoutButton: {
-    padding: "10px",
-    width: "150px",
-    backgroundColor: "#ff4d4f",
-    color: "white",
-    border: "none",
-    cursor: "pointer",
-  },
-};
