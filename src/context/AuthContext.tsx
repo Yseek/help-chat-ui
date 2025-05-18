@@ -1,32 +1,48 @@
 "use client";
 
-import { createContext, useContext, useState, ReactNode } from "react";
-import { loginApi } from "@/services/AuthService"; // ✅ 여기!
+import { createContext, useContext, useState, useEffect } from "react";
 
-interface AuthContextType {
-  token: string | null;
-  email: string | null;
+type AuthContextType = {
+  token: string;
+  email: string;
   login: (email: string, password: string) => Promise<void>;
-  logout?: () => void;
-}
+  logout: () => void;
+};
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [token, setToken] = useState<string | null>(null);
-  const [email, setEmail] = useState<string | null>(null);
+export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+  const [token, setToken] = useState("");
+  const [email, setEmail] = useState("");
+
+  useEffect(() => {
+    const storedToken = localStorage.getItem("token");
+    const storedEmail = localStorage.getItem("email");
+    if (storedToken && storedEmail) {
+      setToken(storedToken);
+      setEmail(storedEmail);
+    }
+  }, []);
 
   const login = async (email: string, password: string) => {
-    const data = await loginApi(email, password); // ✅ 분리된 로직 사용
+    const res = await fetch("http://localhost:8080/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
+    if (!res.ok) throw new Error("로그인 실패");
+    const data = await res.json();
     setToken(data.token);
-    setEmail(data.email); // ✅ 사용자 이메일 저장
+    setEmail(data.email);
     localStorage.setItem("token", data.token);
+    localStorage.setItem("email", data.email);
   };
 
   const logout = () => {
-    setToken(null);
-    setEmail(null);
+    setToken("");
+    setEmail("");
     localStorage.removeItem("token");
+    localStorage.removeItem("email");
   };
 
   return (
@@ -36,10 +52,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-export const useAuth = (): AuthContextType => {
+export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error("useAuth는 AuthProvider 안에서 사용되어야 합니다.");
-  }
+  if (!context) throw new Error("useAuth must be used within AuthProvider");
   return context;
 };

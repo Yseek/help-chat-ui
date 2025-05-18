@@ -1,32 +1,30 @@
+// login/page.tsx
 "use client";
 
 import { useState } from "react";
+import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
-import styles from "./Signup.module.css"; // ✅ CSS 모듈 import
+import styles from "./Login.module.css"; // ✅ 스타일 import
 
-export default function SignupPage() {
+export default function LoginPage() {
+  const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
 
-  const handleSignup = async () => {
+  const handleLogin = async () => {
     try {
-      const res = await fetch("http://localhost:8080/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-      if (!res.ok) throw new Error();
-      alert("회원가입 성공! 로그인 해주세요.");
-      router.push("/login");
-    } catch {
-      alert("회원가입 실패");
+      await login(email, password);
+      router.push("/");
+    } catch (e) {
+      console.log(`로그인 실패 : ${e}`);
+      alert("로그인 실패");
     }
   };
 
   return (
     <div className={styles.container}>
-      <h2>회원가입</h2>
+      <h2>로그인</h2>
       <input
         className={styles.input}
         value={email}
@@ -35,12 +33,13 @@ export default function SignupPage() {
       />
       <input
         className={styles.input}
+        type="password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
         placeholder="비밀번호"
       />
-      <button className={styles.signupButton} onClick={handleSignup}>
-        회원가입
+      <button onClick={handleLogin} className={styles.loginButton}>
+        로그인
       </button>
     </div>
   );
