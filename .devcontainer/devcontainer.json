@@ -5,6 +5,7 @@
         "context": "."
     },
     "forwardPorts": [3000],
+    "runArgs": ["-p", "3000:3000"],  // ✅ 외부에 포트 공개
     "postCreateCommand": "gitmoji -i",
     "customizations": {
         "vscode": {
